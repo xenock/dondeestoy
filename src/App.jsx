@@ -21,7 +21,9 @@ const Question = ({ data }) => {
     }
   };
 
-  const isCorrectAnswer = answered && selected === correctAnswer;
+  useEffect(() => {
+    console.log({ answered, selected, correctAnswer });
+  }, [answered, selected, correctAnswer]);
 
   return (
     <article>
@@ -31,7 +33,15 @@ const Question = ({ data }) => {
         {options.map(({ response, isCorrect }, index) => (
           <Button
             key={index}
-            className={isCorrectAnswer && index === selected ? "correct" : ""}
+            className={
+              answered
+                ? index === correctAnswer || index === selected
+                  ? index === correctAnswer
+                    ? "correct"
+                    : "wrong"
+                  : ""
+                : ""
+            }
             onClick={selectResponse(index)}
           >
             {response}

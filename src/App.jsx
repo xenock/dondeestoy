@@ -1,26 +1,39 @@
 import "./App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import questions from "./data";
 
-const Button = ({ onClick, children }) => (
-  <button onClick={onClick}>{children}</button>
+const Button = ({ onClick, children, className }) => (
+  <button className={className} onClick={onClick}>
+    {children}
+  </button>
 );
 
 const Question = ({ data }) => {
   const { image, options } = data;
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState(null);
+  const [answered, setAnwered] = useState(false);
+  const correctAnswer = options.findIndex((option) => option.isCorrect);
 
   const selectResponse = (response) => () => {
-    console.log(`Response ${response}`);
+    if (!answered) {
+      setSelected(response);
+      setAnwered(true);
+    }
   };
+
+  const isCorrectAnswer = answered && selected === correctAnswer;
 
   return (
     <article>
-      <img alt="" src={`/${image}.jpg`} />
+      <img alt="No es posible cargar la imagen" src={`/${image}.jpg`} />
       <p>¿Dónde estoy?</p>
       <div className="buttons">
-        {options.map(({ response }, index) => (
-          <Button key={index} onClick={selectResponse(response)}>
+        {options.map(({ response, isCorrect }, index) => (
+          <Button
+            key={index}
+            className={isCorrectAnswer && index === selected ? "correct" : ""}
+            onClick={selectResponse(index)}
+          >
             {response}
           </Button>
         ))}

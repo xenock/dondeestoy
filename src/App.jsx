@@ -21,9 +21,15 @@ const Question = ({ data }) => {
     }
   };
 
-  useEffect(() => {
-    console.log({ answered, selected, correctAnswer });
-  }, [answered, selected, correctAnswer]);
+  const printProperColor = (index) => {
+    const isRelevantOption = index === correctAnswer || index === selected;
+
+    if (answered && isRelevantOption) {
+      return index === correctAnswer ? "correct" : "wrong";
+    } else {
+      return "";
+    }
+  };
 
   return (
     <article>
@@ -33,15 +39,7 @@ const Question = ({ data }) => {
         {options.map(({ response, isCorrect }, index) => (
           <Button
             key={index}
-            className={
-              answered
-                ? index === correctAnswer || index === selected
-                  ? index === correctAnswer
-                    ? "correct"
-                    : "wrong"
-                  : ""
-                : ""
-            }
+            className={printProperColor(index)}
             onClick={selectResponse(index)}
           >
             {response}

@@ -1,5 +1,5 @@
+import { useState, useEffect } from "react";
 import "./App.css";
-import { useEffect, useState } from "react";
 import questions from "./data";
 
 const Button = ({ onClick, children, className }) => (
@@ -8,7 +8,7 @@ const Button = ({ onClick, children, className }) => (
   </button>
 );
 
-const Question = ({ data }) => {
+const Question = ({ data, setStep, addPoint }) => {
   const { image, options } = data;
   const [selected, setSelected] = useState(null);
   const [answered, setAnwered] = useState(false);
@@ -18,6 +18,14 @@ const Question = ({ data }) => {
     if (!answered) {
       setSelected(response);
       setAnwered(true);
+
+      if (response === correctAnswer) addPoint();
+
+      setTimeout(() => {
+        setStep();
+        setSelected(null);
+        setAnwered(false);
+      }, 500);
     }
   };
 
@@ -51,9 +59,24 @@ const Question = ({ data }) => {
 };
 
 function App() {
+  const [step, setStep] = useState(0);
+  const [score, setScore] = useState(0);
+
+  const nextStep = (nextStep) => {
+    setStep(step + 1);
+  };
+
+  const addPoint = () => {
+    setScore(score + 1);
+  };
+
+  useEffect(() => {
+    console.log(score);
+  }, [score]);
+
   return (
     <main>
-      <Question data={questions[0]} />
+      <Question data={questions[step]} setStep={nextStep} addPoint={addPoint} />
     </main>
   );
 }

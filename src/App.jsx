@@ -8,7 +8,7 @@ const Button = ({ onClick, children, className }) => (
   </button>
 );
 
-const Question = ({ data, setStep, addPoint }) => {
+const Question = ({ data, nextQuestionStep, addPoint, nextStep }) => {
   const { image, options } = data;
   const [selected, setSelected] = useState(null);
   const [answered, setAnwered] = useState(false);
@@ -22,10 +22,10 @@ const Question = ({ data, setStep, addPoint }) => {
       if (response === correctAnswer) addPoint();
 
       setTimeout(() => {
-        setStep();
+        nextQuestionStep();
         setSelected(null);
         setAnwered(false);
-      }, 500);
+      }, 800);
     }
   };
 
@@ -58,11 +58,36 @@ const Question = ({ data, setStep, addPoint }) => {
   );
 };
 
-function App() {
-  const [step, setStep] = useState(0);
-  const [score, setScore] = useState(0);
+const Welcome = ({ step, nextStep }) => (
+  <article>
+    <img
+      className="logo"
+      alt="No es posible cargar la imagen"
+      src="/logo.png"
+    />
+    <h1>Bienvenidos a este juego sobre lugares de Cartaya</h1>
+    <p>Descubre cuanto conoces a tu pueblo</p>
+    <div className="buttons">
+      <button onClick={nextStep}>¡Comenzar!</button>
+    </div>
+  </article>
+);
 
-  const nextStep = (nextStep) => {
+const Stepper = ({ children, step }) => {
+  const Element = () => [...children][step];
+  return <Element />;
+};
+
+function App() {
+  const [questionStep, setQuestionStep] = useState(0);
+  const [score, setScore] = useState(0);
+  const [step, setStep] = useState(0);
+
+  const nextQuestionStep = () => {
+    setQuestionStep(questionStep + 1);
+  };
+
+  const nextStep = () => {
     setStep(step + 1);
   };
 
@@ -76,7 +101,16 @@ function App() {
 
   return (
     <main>
-      <Question data={questions[step]} setStep={nextStep} addPoint={addPoint} />
+      <Stepper step={step}>
+        <Welcome nextStep={nextStep} />
+        <Question
+          addPoint={addPoint}
+          data={questions[questionStep]}
+          nextStep={nextStep}
+          nextQuestionStep={nextQuestionStep}
+          setStep={setStep}
+        />
+      </Stepper>
     </main>
   );
 }

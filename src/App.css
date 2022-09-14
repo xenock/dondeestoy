@@ -25,6 +25,10 @@ main {
   color: var(--main-color);
 }
 
+p {
+  margin: 25px 0;
+}
+
 img {
   width: 100%;
 }
@@ -52,4 +56,8 @@ button {
 .wrong {
   color: var(--wrong-color);
   border-color: var(--wrong-color);
+}
+
+.logo {
+  width: 50%;
 }

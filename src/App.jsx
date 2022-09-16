@@ -1,6 +1,51 @@
-import { useState, useEffect } from "react";
+import { useEffect, useReducer } from "react";
 import "./App.css";
 import questions from "./data";
+
+const initialState = {
+  questionStep: 0,
+  score: 0,
+  step: 0,
+  selected: null,
+  answered: false,
+};
+
+const actions = {
+  nextStep: "nextStep",
+  nextQuestionStep: "nextQuestionStep",
+  addPoint: "addPoint",
+  selectOption: "selectOption",
+  reset: "reset",
+};
+
+const reducer = (state, action) => {
+  return (
+    {
+      [actions.nextStep]: {
+        ...state,
+        step: state.step + 1,
+      },
+      [actions.nextQuestionStep]: {
+        ...state,
+        questionStep: state.questionStep + 1,
+      },
+      [actions.addPoint]: {
+        ...state,
+        score: state.score + 1,
+      },
+      [actions.selectOption]: {
+        ...state,
+        selected: action.payload,
+        answered: true,
+      },
+      [actions.reset]: {
+        ...state,
+        selected: null,
+        answered: false,
+      },
+    }[action.type] || state
+  );
+};
 
 const Button = ({ onClick, children, className }) => (
   <button className={className} onClick={onClick}>
@@ -8,31 +53,35 @@ const Button = ({ onClick, children, className }) => (
   </button>
 );
 
-const Question = ({ data, nextQuestionStep, addPoint, nextStep }) => {
+const Question = ({
+  state,
+  dispatch,
+  data,
+  nextQuestionStep,
+  addPoint,
+  nextStep,
+}) => {
   const { image, options } = data;
-  const [selected, setSelected] = useState(null);
-  const [answered, setAnwered] = useState(false);
   const correctAnswer = options.findIndex((option) => option.isCorrect);
 
   const selectResponse = (response) => () => {
-    if (!answered) {
-      setSelected(response);
-      setAnwered(true);
+    if (!state.answered) {
+      dispatch({ type: actions.selectOption, payload: response });
 
       if (response === correctAnswer) addPoint();
 
       setTimeout(() => {
-        nextQuestionStep();
-        setSelected(null);
-        setAnwered(false);
+        dispatch({ type: actions.reset });
+        dispatch({ type: actions.nextQuestionStep });
       }, 800);
     }
   };
 
   const printProperColor = (index) => {
-    const isRelevantOption = index === correctAnswer || index === selected;
+    const isRelevantOption =
+      index === correctAnswer || index === state.selected;
 
-    if (answered && isRelevantOption) {
+    if (state.answered && isRelevantOption) {
       return index === correctAnswer ? "correct" : "wrong";
     } else {
       return "";
@@ -79,36 +128,35 @@ const Stepper = ({ children, step }) => {
 };
 
 function App() {
-  const [questionStep, setQuestionStep] = useState(0);
-  const [score, setScore] = useState(0);
-  const [step, setStep] = useState(0);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const nextQuestionStep = () => {
-    setQuestionStep(questionStep + 1);
+    dispatch({ type: actions.nextQuestionStep });
   };
 
   const nextStep = () => {
-    setStep(step + 1);
+    dispatch({ type: actions.nextStep });
   };
 
   const addPoint = () => {
-    setScore(score + 1);
+    dispatch({ type: actions.addPoint });
   };
 
   useEffect(() => {
-    console.log(score);
-  }, [score]);
+    console.log(state);
+  }, [state]);
 
   return (
     <main>
-      <Stepper step={step}>
+      <Stepper step={state.step}>
         <Welcome nextStep={nextStep} />
         <Question
+          state={state}
+          dispatch={dispatch}
           addPoint={addPoint}
-          data={questions[questionStep]}
+          data={questions[state.questionStep]}
           nextStep={nextStep}
           nextQuestionStep={nextQuestionStep}
-          setStep={setStep}
         />
       </Stepper>
     </main>

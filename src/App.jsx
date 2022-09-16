@@ -19,26 +19,27 @@ const actions = {
 };
 
 const reducer = (state, action) => {
+  const { nextStep, nextQuestionStep, addPoint, selectOption, reset } = actions;
   return (
     {
-      [actions.nextStep]: {
+      [nextStep]: {
         ...state,
         step: state.step + 1,
       },
-      [actions.nextQuestionStep]: {
+      [nextQuestionStep]: {
         ...state,
         questionStep: state.questionStep + 1,
       },
-      [actions.addPoint]: {
+      [addPoint]: {
         ...state,
         score: state.score + 1,
       },
-      [actions.selectOption]: {
+      [selectOption]: {
         ...state,
         selected: action.payload,
         answered: true,
       },
-      [actions.reset]: {
+      [reset]: {
         ...state,
         selected: null,
         answered: false,
@@ -47,20 +48,7 @@ const reducer = (state, action) => {
   );
 };
 
-const Button = ({ onClick, children, className }) => (
-  <button className={className} onClick={onClick}>
-    {children}
-  </button>
-);
-
-const Question = ({
-  state,
-  dispatch,
-  data,
-  nextQuestionStep,
-  addPoint,
-  nextStep,
-}) => {
+const Question = ({ state, dispatch, data, addPoint, numberOfQuestions }) => {
   const { image, options } = data;
   const correctAnswer = options.findIndex((option) => option.isCorrect);
 
@@ -68,11 +56,16 @@ const Question = ({
     if (!state.answered) {
       dispatch({ type: actions.selectOption, payload: response });
 
-      if (response === correctAnswer) addPoint();
+      if (response === correctAnswer) dispatch({ type: actions.addPoint });
 
       setTimeout(() => {
         dispatch({ type: actions.reset });
-        dispatch({ type: actions.nextQuestionStep });
+
+        if (state.questionStep === numberOfQuestions - 1) {
+          dispatch({ type: actions.nextStep });
+        } else {
+          dispatch({ type: actions.nextQuestionStep });
+        }
       }, 800);
     }
   };
@@ -94,13 +87,13 @@ const Question = ({
       <p>¿Dónde estoy?</p>
       <div className="buttons">
         {options.map(({ response, isCorrect }, index) => (
-          <Button
+          <button
             key={index}
             className={printProperColor(index)}
             onClick={selectResponse(index)}
           >
             {response}
-          </Button>
+          </button>
         ))}
       </div>
     </article>
@@ -122,6 +115,17 @@ const Welcome = ({ step, nextStep }) => (
   </article>
 );
 
+const Score = ({ score }) => (
+  <article>
+    <img
+      className="logo"
+      alt="No es posible cargar la imagen"
+      src="/logo.png"
+    />
+    <h1>¡Enhorabuena! Tu puntuación es {score}</h1>
+  </article>
+);
+
 const Stepper = ({ children, step }) => {
   const Element = () => [...children][step];
   return <Element />;
@@ -130,16 +134,8 @@ const Stepper = ({ children, step }) => {
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const nextQuestionStep = () => {
-    dispatch({ type: actions.nextQuestionStep });
-  };
-
   const nextStep = () => {
     dispatch({ type: actions.nextStep });
-  };
-
-  const addPoint = () => {
-    dispatch({ type: actions.addPoint });
   };
 
   useEffect(() => {
@@ -153,11 +149,10 @@ function App() {
         <Question
           state={state}
           dispatch={dispatch}
-          addPoint={addPoint}
           data={questions[state.questionStep]}
-          nextStep={nextStep}
-          nextQuestionStep={nextQuestionStep}
+          numberOfQuestions={questions.length}
         />
+        <Score score={state.score} />
       </Stepper>
     </main>
   );

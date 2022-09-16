@@ -1,4 +1,4 @@
-export default [
+const data = [
   {
     image: "01",
     options: [
@@ -16,3 +16,5 @@ export default [
     ],
   },
 ];
+
+export default data;

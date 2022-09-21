@@ -102,13 +102,21 @@ const Question = ({ state, dispatch, data, addPoint, numberOfQuestions }) => {
 
 const Welcome = ({ step, nextStep }) => (
   <article>
-    <img
-      className="logo"
-      alt="No es posible cargar la imagen"
-      src="/logo.png"
-    />
-    <h1>Bienvenidos a este juego sobre lugares de Cartaya</h1>
-    <p>Descubre cuanto conoces a tu pueblo</p>
+    <picture>
+      <img
+        className="logo"
+        alt="No es posible cargar la imagen"
+        src="/logo.png"
+      />
+    </picture>
+
+    <picture>
+      <img
+        className="welcome-image"
+        alt="No es posible cargar la imagen"
+        src="/welcome_image.jpg"
+      />
+    </picture>
     <div className="buttons">
       <button onClick={nextStep}>¡Comenzar!</button>
     </div>
@@ -127,7 +135,7 @@ const Score = ({ score }) => (
 );
 
 const Stepper = ({ children, step }) => {
-  const Element = () => [...children][step];
+  const Element = () => children[step];
   return <Element />;
 };
 

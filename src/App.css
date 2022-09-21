@@ -58,6 +58,13 @@ button {
   border-color: var(--wrong-color);
 }
 
+picture {
+  display: block;
+}
 .logo {
   width: 50%;
+}
+
+.welcome-image {
+  width: 80%;
 }

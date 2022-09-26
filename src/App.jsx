@@ -1,10 +1,10 @@
-import { useEffect, useReducer } from "react";
+import { useReducer } from "react";
 import "./App.css";
 import questions from "./data";
 
 const initialState = {
   questionStep: 0,
-  score: 0,
+  score: 4,
   step: 0,
   selected: null,
   answered: false,
@@ -122,17 +122,36 @@ const Welcome = ({ step, nextStep }) => (
     </div>
   </article>
 );
+const response = (score) => {
+  if (score <= 4) {
+    return "Me decepcionas";
+  } else if (score <= 12) {
+    return "¿Seguro que tú eres de aquí?";
+  } else if (score <= 20) {
+    return "Aún te queda mucho por descubrir";
+  } else if (score <= 23) {
+    return "Eres grande. ¡Muy grande! 💃";
+  } else if (score === 24) {
+    return "💃 ¡Pleno! 💃";
+  } else {
+    return "";
+  }
+};
 
-const Score = ({ score }) => (
-  <article>
-    <img
-      className="logo"
-      alt="No es posible cargar la imagen"
-      src="/logo.png"
-    />
-    <h1>¡Enhorabuena! Tu puntuación es {score}</h1>
-  </article>
-);
+const Score = ({ score = 0 }) => {
+  const a = response(score);
+  return (
+    <article>
+      <img
+        className="logo"
+        alt="No es posible cargar la imagen"
+        src="/logo.png"
+      />
+      <h1>{`Has adivinado ${score} de ${questions.length}`}</h1>
+      <p>{a}</p>
+    </article>
+  );
+};
 
 const Stepper = ({ children, step }) => {
   const Element = () => children[step];
@@ -145,10 +164,6 @@ function App() {
   const nextStep = () => {
     dispatch({ type: actions.nextStep });
   };
-
-  useEffect(() => {
-    console.log(state);
-  }, [state]);
 
   return (
     <main>

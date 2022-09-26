@@ -5,11 +5,11 @@
   --wrong-color: #e74c3c;
 }
 
-@font-face {
-  font-family: "SpecialElite";
-  src: local("SpecialElite"),
-       url("./fonts/SpecialElite.ttf");
-}
+/* @font-face { */
+/*   font-family: "SpecialElite"; */
+/*   src: local("SpecialElite"), */
+/*        url("./fonts/SpecialElite.ttf"); */
+/* } */
 
 main {
   text-align: center;
@@ -20,7 +20,7 @@ main {
   align-items: center;
   justify-content: center;
 
-  font-family: "SpecialElite";
+  font-family: "Roboto";
   font-size: calc(10px + 2vmin);
   color: var(--main-color);
 }
@@ -34,7 +34,7 @@ img {
 }
 
 button {
-  font-family: "SpecialElite";
+  font-family: "Roboto";
   background-color: unset;
   padding: 10px;
   margin: 10px 0;
@@ -60,6 +60,7 @@ button {
 
 picture {
   display: block;
+  margin-bottom: 40px;
 }
 .logo {
   width: 50%;

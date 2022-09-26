@@ -5,12 +5,6 @@
   --wrong-color: #e74c3c;
 }
 
-/* @font-face { */
-/*   font-family: "SpecialElite"; */
-/*   src: local("SpecialElite"), */
-/*        url("./fonts/SpecialElite.ttf"); */
-/* } */
-
 main {
   text-align: center;
   background-color: var(--secondary-color);

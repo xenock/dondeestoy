@@ -85,7 +85,7 @@ const data = [
   {
     image: "011",
     options: [
-      { response: "La Pila. camino de la ", isCorrect: false },
+      { response: "La Pila. camino de La Romería", isCorrect: false },
       { response: "Fuente de Las Madamas", isCorrect: true },
       { response: "Abrebadero de la pradera de San Isidro", isCorrect: false },
     ],

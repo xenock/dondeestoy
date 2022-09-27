@@ -4,7 +4,7 @@ import questions from "./data";
 
 const initialState = {
   questionStep: 0,
-  score: 4,
+  score: 0,
   step: 0,
   selected: null,
   answered: false,
